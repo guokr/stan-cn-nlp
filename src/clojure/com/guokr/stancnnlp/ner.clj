@@ -1,5 +1,5 @@
 (ns com.guokr.stancnnlp.ner
-  (:require [clojure.stanfordnlp.seg :as seg]))
+  (:require [com.guokr.stancnnlp.seg :as seg]))
 
 (def props (doto (java.util.Properties.)
                (.setProperty "inputEncoding" "utf-8")
