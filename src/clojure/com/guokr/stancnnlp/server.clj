@@ -1,4 +1,4 @@
-(ns clojure.server
+(ns com.guokr.stancnnlp.server
   (:require [noir.server :as server]))
 
 (server/load-views-ns 'clojure.views)

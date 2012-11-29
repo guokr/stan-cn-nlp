@@ -1,4 +1,4 @@
-(ns clojure.stanfordnlp.seg)
+(ns com.guokr.stancnnlp.seg)
 
 (def props (doto (java.util.Properties.)
                (.setProperty "sighanCorporaDict" "./")

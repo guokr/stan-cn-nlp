@@ -1,4 +1,4 @@
-(ns clojure.stanfordnlp.ner
+(ns com.guokr.stancnnlp.ner
   (:require [clojure.stanfordnlp.seg :as seg]))
 
 (def props (doto (java.util.Properties.)

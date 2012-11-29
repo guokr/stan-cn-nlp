@@ -1,7 +1,7 @@
-(ns clojure.views.nlp
-  (:require [clojure.stanfordnlp.seg :as seg])
-  (:require [clojure.stanfordnlp.tag :as tag])
-  (:require [clojure.stanfordnlp.ner :as ner])
+(ns views.nlp
+  (:require [com.guokr.stancnnlp.seg :as seg])
+  (:require [com.guokr.stancnnlp.tag :as tag])
+  (:require [com.guokr.stancnnlp.ner :as ner])
   (:require [noir.response :as response])
   (:use [noir.core :only [defpage]]))
 
