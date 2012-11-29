@@ -1,8 +1,8 @@
 (ns test
   (:use clojure.test)
-  (:require [com.guokr.stancnnlp.seg :as seg])
-  (:require [com.guokr.stancnnlp.tag :as tag])
-  (:require [com.guokr.stancnnlp.ner :as ner]))
+  (:require [com.guokr.nlp.seg :as seg])
+  (:require [com.guokr.nlp.tag :as tag])
+  (:require [com.guokr.nlp.ner :as ner]))
 
 (deftest mytest []
   (println (seg/seg "这是个测试"))
