@@ -8,7 +8,7 @@ public class TagWrapper {
 
     public static String model = ResUtil.get("chinese-distsim.tagger");
 
-    private static MaxentTagger getTagger() {
+    public static MaxentTagger reload() {
         MaxentTagger mt = null;
         try {
             mt = new MaxentTagger(model);
@@ -17,7 +17,7 @@ public class TagWrapper {
         return mt;
     }
 
-    public static MaxentTagger tagger = getTagger();
+    public static MaxentTagger tagger = reload();
 
     public static String tag(String text) {
         return tagger.tagString(SegWrapper.segment(text));

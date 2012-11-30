@@ -8,7 +8,7 @@ public class NerWrapper {
 
     public static String model = ResUtil.get("chinese.misc.distsim.crf.ser.gz");
 
-    private static CRFClassifier getClassifier() {
+    public static CRFClassifier reload() {
         Properties props = new Properties();
         props.setProperty("inputEncoding", "UTF-8");
         props.setProperty("outputEncoding", "UTF-8");
@@ -20,7 +20,7 @@ public class NerWrapper {
         return crf;
     }
 
-    public static CRFClassifier classifier = getClassifier();
+    public static CRFClassifier classifier = reload();
 
     public static String recognize(String text) {
         return classifier.classifyToString(SegWrapper.segment(text));

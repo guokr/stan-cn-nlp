@@ -11,7 +11,7 @@ public class SegWrapper {
     public static String base = dictionary.substring(0, dictionary.lastIndexOf(java.io.File.separator));
     public static String model = ResUtil.get("ctb.gz");
 
-    private static CRFClassifier getClassifier() {
+    public static CRFClassifier reload() {
         Properties props = new Properties();
         props.setProperty("serDictionary", dictionary);
         props.setProperty("NormalizationTable", norm);
@@ -28,7 +28,7 @@ public class SegWrapper {
         return crf;
     }
 
-    public static CRFClassifier classifier = getClassifier();
+    public static CRFClassifier classifier = reload();
 
     public static String segment(String text) {
         return classifier.classifyToString(text);
