@@ -1,0 +1,5 @@
+inputEncoding = UTF-8
+outputEncoding = UTF-8
+
+model = classpath://ner/chinese.misc.distsim.crf.ser.gz
+
