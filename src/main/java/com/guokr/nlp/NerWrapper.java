@@ -4,23 +4,25 @@ import java.util.Properties;
 
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 
+import com.guokr.util.Settings;
+
 public class NerWrapper {
 
-    public static String model = ResUtil.get("chinese.misc.distsim.crf.ser.gz");
+    public static Settings defaults = Settings.load("ner/defaults.using.prop");
 
-    public static CRFClassifier reload() {
-        Properties props = new Properties();
-        props.setProperty("inputEncoding", "UTF-8");
-        props.setProperty("outputEncoding", "UTF-8");
+    public static CRFClassifier reload(Properties settings, Properties defaults) {
+        Settings props = new Settings(settings, defaults);
+        String model = props.getProperty("model");
         CRFClassifier crf = null;
         try {
             crf = CRFClassifier.getClassifier(model, props);
         } catch (Exception e) {
+            System.out.println(e);
         }
         return crf;
     }
 
-    public static CRFClassifier classifier = reload();
+    public static CRFClassifier classifier = reload(Settings.empty, defaults);
 
     public static String recognize(String text) {
         return classifier.classifyToString(SegWrapper.segment(text));

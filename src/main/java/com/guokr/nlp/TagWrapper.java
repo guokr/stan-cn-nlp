@@ -1,23 +1,28 @@
 package com.guokr.nlp;
 
-import java.io.IOException;
+import java.util.Properties;
 
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
+import com.guokr.util.Settings;
+
 public class TagWrapper {
 
-    public static String model = ResUtil.get("chinese-distsim.tagger");
+    public static Settings defaults = Settings.load("tag/defaults.using.prop");
 
-    public static MaxentTagger reload() {
+    public static MaxentTagger reload(Properties settings, Properties defaults) {
+        Settings props = new Settings(settings, defaults);
+        String model = props.getProperty("model");
         MaxentTagger mt = null;
         try {
             mt = new MaxentTagger(model);
         } catch (Exception e) {
+            System.out.println(e);
         }
         return mt;
     }
 
-    public static MaxentTagger tagger = reload();
+    public static MaxentTagger tagger = reload(Settings.empty, defaults);
 
     public static String tag(String text) {
         return tagger.tagString(SegWrapper.segment(text));

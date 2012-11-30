@@ -4,31 +4,25 @@ import java.util.Properties;
 
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 
+import com.guokr.util.Settings;
+
 public class SegWrapper {
 
-    public static String dictionary = ResUtil.get("dict-chris6.ser.gz");
-    public static String norm = ResUtil.get("norm.simp.utf8");
-    public static String base = dictionary.substring(0, dictionary.lastIndexOf(java.io.File.separator));
-    public static String model = ResUtil.get("ctb.gz");
+    public static Settings defaults = Settings.load("seg/defaults.using.prop");
 
-    public static CRFClassifier reload() {
-        Properties props = new Properties();
-        props.setProperty("serDictionary", dictionary);
-        props.setProperty("NormalizationTable", norm);
-        props.setProperty("sighanCorporaDict", base);
-        props.setProperty("sighanPostProcessing", "true");
-        props.setProperty("inputEncoding", "UTF-8");
-        props.setProperty("outputEncoding", "UTF-8");
-        props.setProperty("normTableEncoding", "UTF-8");
+    public static CRFClassifier reload(Properties settings, Properties defaults) {
+        Settings props = new Settings(settings, defaults);
+        String model = props.getProperty("model");
         CRFClassifier crf = null;
         try {
             crf = CRFClassifier.getClassifier(model, props);
         } catch (Exception e) {
+            System.out.println(e);
         }
         return crf;
     }
 
-    public static CRFClassifier classifier = reload();
+    public static CRFClassifier classifier = reload(Settings.empty, defaults);
 
     public static String segment(String text) {
         return classifier.classifyToString(text);
