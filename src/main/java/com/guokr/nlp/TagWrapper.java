@@ -8,7 +8,7 @@ import com.guokr.util.Settings;
 
 public class TagWrapper {
 
-    public static Settings defaults = Settings.load("tag/defaults.using.prop");
+    public static Settings defaults = Settings.load("src/main/resources/tag/defaults.using.prop");
 
     public static MaxentTagger reload(Properties settings, Properties defaults) {
         Settings props = new Settings(settings, defaults);
@@ -18,6 +18,7 @@ public class TagWrapper {
             mt = new MaxentTagger(model);
         } catch (Exception e) {
             System.out.println(e);
+            e.printStackTrace(System.out);
         }
         return mt;
     }

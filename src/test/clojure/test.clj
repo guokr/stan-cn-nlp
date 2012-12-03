@@ -8,3 +8,8 @@
   (println (seg/seg "这是个测试"))
   (println (tag/tag "这是个测试"))
   (println (ner/ner "这是个测试")))
+
+(defn main []
+  (println (seg/seg "这是个测试"))
+  (println (tag/tag "这是个测试"))
+  (println (ner/ner "这是个测试")))

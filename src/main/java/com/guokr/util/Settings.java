@@ -1,5 +1,7 @@
 package com.guokr.util;
 
+import java.io.InputStream;
+import java.io.FileInputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -7,11 +9,13 @@ public class Settings extends Properties {
 
     public static Settings empty = new Settings(new Properties(), new Properties());
 
-    public static Settings load(String name) {
+    public static Settings load(String path) {
         Properties props = new Properties();
         try {
-            props.load(Settings.class.getResourceAsStream(name));
+            InputStream ins = new FileInputStream(path);
+            props.load(ins);
         } catch(Exception e) {
+            e.printStackTrace(System.out);
         }
         return new Settings(props, empty);
     }

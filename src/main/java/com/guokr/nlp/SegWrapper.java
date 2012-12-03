@@ -8,7 +8,7 @@ import com.guokr.util.Settings;
 
 public class SegWrapper {
 
-    public static Settings defaults = Settings.load("seg/defaults.using.prop");
+    public static Settings defaults = Settings.load("src/main/resources/seg/defaults.using.prop");
 
     public static CRFClassifier reload(Properties settings, Properties defaults) {
         Settings props = new Settings(settings, defaults);
@@ -18,6 +18,7 @@ public class SegWrapper {
             crf = CRFClassifier.getClassifier(model, props);
         } catch (Exception e) {
             System.out.println(e);
+            e.printStackTrace(System.out);
         }
         return crf;
     }
