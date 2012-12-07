@@ -29,6 +29,6 @@ public class SegWrapper {
     public static CRFClassifier classifier = reload(Settings.empty, defaults);
 
     public static String segment(String text) {
-        return classifier.classifyToString(text);
+        return classifier.classifyToString(text).trim();
     }
 }
