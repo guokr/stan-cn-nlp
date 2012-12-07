@@ -1,6 +1,6 @@
 package com.guokr.nlp.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +15,17 @@ public class BasicTests {
 
     @Test
     public void testSeg() {
-        String exp = "这 是 个 测试";
-        String seg = SegWrapper.segment("这是个测试");
-        boolean judge =  exp.equals(seg);
-        System.err.println("results: " + judge + "\nexp:" + exp + "\nseg:" + seg);
-        assertTrue(judge);
+        assertEquals("这 是 个 测试", SegWrapper.segment("这是个测试"));
+    }
+
+    @Test
+    public void testNer() {
+        assertEquals("这/O 是/O 个/O 测试/O", NerWrapper.recognize("这是个测试"));
+    }
+
+    @Test
+    public void testTag() {
+        assertEquals("这#PN 是#VC 个#M 测试#NN", TagWrapper.tag("这是个测试"));
     }
 
 }

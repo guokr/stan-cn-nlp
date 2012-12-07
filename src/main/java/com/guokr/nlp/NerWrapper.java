@@ -29,7 +29,7 @@ public class NerWrapper {
     public static CRFClassifier classifier = reload(Settings.empty, defaults);
 
     public static String recognize(String text) {
-        return classifier.classifyToString(SegWrapper.segment(text));
+        return classifier.classifyToString(SegWrapper.segment(text).trim()).trim();
     }
 
 }
