@@ -5,12 +5,15 @@ import java.util.Properties;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 
 import com.guokr.util.Settings;
+import com.guokr.util.ClasspathProtocol;
 
 public class NerWrapper {
 
     public static Settings defaults = Settings.load("src/main/resources/ner/defaults.using.prop");
 
     public static CRFClassifier reload(Properties settings, Properties defaults) {
+        ClasspathProtocol.class.getName();
+
         Settings props = new Settings(settings, defaults);
         String model = props.getProperty("model");
         CRFClassifier crf = null;
