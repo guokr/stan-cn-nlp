@@ -9,10 +9,15 @@ import com.guokr.util.ClasspathProtocol;
 
 public class SegWrapper {
 
-    public static Settings defaults = Settings.load("src/main/resources/seg/defaults.using.prop");
+    public static Settings defaults = Settings.load("classpath:seg/defaults.using.prop");
 
     public static CRFClassifier reload(Properties settings, Properties defaults) {
-        ClasspathProtocol.class.getName();
+        try {
+            Class.forName("com.guokr.util.ClasspathProtocol");
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace(System.err);
+        }
 
         Settings props = new Settings(settings, defaults);
         String model = props.getProperty("model");
@@ -21,7 +26,7 @@ public class SegWrapper {
             crf = CRFClassifier.getClassifier(model, props);
         } catch (Exception e) {
             System.out.println(e);
-            e.printStackTrace(System.out);
+            e.printStackTrace(System.err);
         }
         return crf;
     }

@@ -1,13 +1,13 @@
 inputEncoding = UTF-8
 outputEncoding = UTF-8
 
-NormalizationTable = src/main/resources/seg/norm.simp.utf8
+NormalizationTable = classpath:seg/norm.simp.utf8
 normTableEncoding = UTF-8
 
-sighanCorporaDict = src/main/resources/
+sighanCorporaDict = classpath:./
 sighanPostProcessing = true
 
-serDictionary = src/main/resources/seg/dict-chris6.ser.gz
+serDictionary = classpath:seg/dict-chris6.ser.gz
 
-model = src/main/resources/seg/ctb.gz
+model = classpath:seg/ctb.gz
 

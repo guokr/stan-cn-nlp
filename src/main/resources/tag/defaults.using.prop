@@ -1,1 +1,1 @@
-model = src/main/resources/tag/chinese-distsim.tagger
+model = classpath:tag/chinese-distsim.tagger

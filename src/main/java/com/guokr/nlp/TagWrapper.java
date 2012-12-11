@@ -9,10 +9,15 @@ import com.guokr.util.ClasspathProtocol;
 
 public class TagWrapper {
 
-    public static Settings defaults = Settings.load("src/main/resources/tag/defaults.using.prop");
+    public static Settings defaults = Settings.load("classpath:tag/defaults.using.prop");
 
     public static MaxentTagger reload(Properties settings, Properties defaults) {
-        ClasspathProtocol.class.getName();
+        try {
+            Class.forName("com.guokr.util.ClasspathProtocol");
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace(System.err);
+        }
 
         Settings props = new Settings(settings, defaults);
         String model = props.getProperty("model");
@@ -21,7 +26,7 @@ public class TagWrapper {
             mt = new MaxentTagger(model);
         } catch (Exception e) {
             System.out.println(e);
-            e.printStackTrace(System.out);
+            e.printStackTrace(System.err);
         }
         return mt;
     }

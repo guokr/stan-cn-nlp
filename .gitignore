@@ -3,6 +3,8 @@
 .lein-deps-sum
 .lein-failures
 
+dependency-reduced-pom.xml
+
 # OS generated files #
 .DS_Store
 .DS_Store?
@@ -12,3 +14,4 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+
