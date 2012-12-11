@@ -14,7 +14,7 @@
   </scm>
   <build>
     <sourceDirectory>src/main/clojure</sourceDirectory>
-    <testSourceDirectory>src/test/clojure</testSourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -31,6 +31,15 @@
     <directory>target</directory>
     <outputDirectory>target/classes</outputDirectory>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
