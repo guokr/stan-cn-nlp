@@ -29,7 +29,7 @@ public class TagWrapper {
     public static MaxentTagger tagger = reload(Settings.empty, defaults);
 
     public static String tag(String text) {
-        return tagger.tagString(SegWrapper.segment(text));
+        return tagger.tagString(SegWrapper.segment(text)).trim();
     }
 
 }
