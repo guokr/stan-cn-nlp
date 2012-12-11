@@ -7,44 +7,33 @@ import com.guokr.nlp.SegWrapper;
 import com.guokr.nlp.NerWrapper;
 import com.guokr.nlp.TagWrapper;
 
-import com.guokr.nlp.commands.Main;
 import com.guokr.nlp.commands.Seg;
 import com.guokr.nlp.commands.Ner;
 import com.guokr.nlp.commands.Tag;
 
 public class GkNlpCli {
 
-    public JCommander jc;
-    public Seg seg;
-    public Ner ner;
-    public Tag tag;
-
-    public GkNlpCli() {
-        Main main = new Main();
-        this.jc = new JCommander(main);
-
-        seg = new Seg();
+    public static void main(String[] args) {
+        JCommander jc = new JCommander();
+        Seg seg = new Seg();
         jc.addCommand("seg", seg);
 
-        ner = new Ner();
+        Ner ner = new Ner();
         jc.addCommand("ner", ner);
 
-        tag = new Tag();
+        Tag tag = new Tag();
         jc.addCommand("tag", tag);
-    }
 
-    public static final void main(String[] args) {
-        GkNlpCli cli = new GkNlpCli();
-        String subcmd = cli.jc.getParsedCommand();
-
+        jc.parse(args);
+        String subcmd = jc.getParsedCommand();
         if(subcmd == null) {
-            cli.jc.usage();
+            jc.usage();
         } else if(subcmd.equals("seg")) {
-            System.out.println(SegWrapper.segment(cli.seg.text));
+            System.out.println(SegWrapper.segment(seg.text.get(0)));
         } else if(subcmd.equals("ner")) {
-            System.out.println(NerWrapper.recognize(cli.ner.text));
+            System.out.println(NerWrapper.recognize(ner.text.get(0)));
         } else if(subcmd.equals("tag")) {
-            System.out.println(TagWrapper.tag(cli.tag.text));
+            System.out.println(TagWrapper.tag(tag.text.get(0)));
         }
 
     }
