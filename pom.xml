@@ -87,7 +87,7 @@
                 <include>**/*Tests.java</include>
             </includes>
             <forkMode>once</forkMode>
-            <argLine>-Xms2g -Xmx3g</argLine>
+            <argLine>-Xms1g -Xmx2g</argLine>
         </configuration>
       </plugin>
     </plugins>
