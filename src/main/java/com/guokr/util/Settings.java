@@ -52,7 +52,7 @@ public class Settings extends Properties {
     }
 
     public String translateClasspath(String key, String value) {
-        if (value.startsWith("classpath:")) {
+        if (value.startsWith("classpath:") && value.length() > 9) {
             System.err.println("original:" + value);
             try {
                 String path = null;

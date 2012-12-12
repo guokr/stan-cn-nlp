@@ -26,7 +26,11 @@ public class ClasspathProtocol {
 
         @Override
         protected URLConnection openConnection(URL u) throws IOException {
-            final URL resourceUrl = loader.getResource(u.getPath());
+            String path = u.getPath();
+            if (path.startsWith("/")) {
+                path = path.substring(1);
+            }
+            final URL resourceUrl = loader.getResource(path);
             if (resourceUrl!=null) {
                 return resourceUrl.openConnection();
             } else {
