@@ -4,7 +4,7 @@ outputEncoding = UTF-8
 NormalizationTable = classpath:seg/norm.simp.utf8
 normTableEncoding = UTF-8
 
-sighanCorporaDict = classpath:./
+sighanCorporaDict = classpath:
 sighanPostProcessing = true
 
 serDictionary = classpath:seg/dict-chris6.ser.gz

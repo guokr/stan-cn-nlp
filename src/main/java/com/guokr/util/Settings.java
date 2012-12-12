@@ -21,8 +21,10 @@ public class Settings extends Properties {
 
         Properties props = new Properties();
         try {
+            System.err.println("before loading settings:" + uri);
             InputStream ins = new URL(uri).openStream();
             props.load(ins);
+            System.err.println("after loading settings:" + uri);
         } catch(Exception e) {
             e.printStackTrace(System.err);
         }
@@ -30,7 +32,12 @@ public class Settings extends Properties {
     }
 
     public Settings(Properties currents, Properties defaults) {
-        ClasspathProtocol.class.getName();
+        try {
+            Class.forName("com.guokr.util.ClasspathProtocol");
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace(System.err);
+        }
 
         this.defaults = defaults;
         Enumeration e = currents.propertyNames();
@@ -38,24 +45,38 @@ public class Settings extends Properties {
             String key = e.nextElement().toString();
             String value = currents.getProperty(key);
 
-            value = translateClasspath(value);
+            value = translateClasspath(key, value);
 
             this.setProperty(key, value);
         }
     }
 
-    public String translateClasspath(String value) {
+    public String translateClasspath(String key, String value) {
         if (value.startsWith("classpath:")) {
-            System.err.println("value:" + value);
+            System.err.println("original:" + value);
             try {
+                String path = null;
                 URL url = new URL(value);
                 URLConnection conn = url.openConnection();
-                value = conn.getURL().getPath();
+
+                if (conn != null) {
+                    path = conn.getURL().getPath();
+
+                    if (key.equals("model") && path.contains("!") && path.endsWith(".gz")) {
+                        path = path.substring(path.indexOf("!") + 2);
+                        value = path;
+                    }
+                    if (!path.contains("!")) {
+                        value = path;
+                    }
+                } else {
+                    value = value.substring(10);
+                }
             } catch (Exception e) {
                 System.err.println(e);
                 e.printStackTrace(System.err);
             }
-            System.err.println("value:" + value);
+            System.err.println("translated:" + value);
         }
         return value;
     }
