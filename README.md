@@ -15,4 +15,20 @@ Please follow below steps to play with:
 * java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.1.0.jar ner "大江东去浪淘尽"
 * java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.1.0.jar tag "大江东去浪淘尽"
 
+The API
+------------
+
+We use a very simple API to reduce the complexity.
+
+Loading configuration:
+
+    SegWrapper.reload(props, defaults);
+
+Segmenting text:
+
+    SegWrapper.segment(text);
+
+NerWrapper and TagWrapper are very similar.
+
+
 
