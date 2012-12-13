@@ -20,7 +20,11 @@ The API
 
 We use a very simple API to reduce the complexity.
 
-Loading configuration:
+Refer to default configuration(optional):
+
+    SegWrapper.defaults;
+
+Loading configuration(optional):
 
     SegWrapper.reload(props, defaults);
 
