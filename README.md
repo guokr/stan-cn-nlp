@@ -11,9 +11,9 @@ Please follow below steps to play with:
 * git clone git://github.com/guokr/stan-cn-nlp.git
 * cd stan-cn-nlp
 * mvn package
-* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.1.0.jar seg "大江东去浪淘尽"
-* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.1.0.jar ner "大江东去浪淘尽"
-* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.1.0.jar tag "大江东去浪淘尽"
+* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.1.0-standalone.jar seg "大江东去浪淘尽"
+* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.1.0-standalone.jar ner "大江东去浪淘尽"
+* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.1.0-standalone.jar tag "大江东去浪淘尽"
 
 The API
 ------------
@@ -33,6 +33,15 @@ Segmenting text:
     SegWrapper.segment(text);
 
 NerWrapper and TagWrapper are very similar.
+
+Prepare for release
+--------------------
+
+Before release this package to maven central, please execute below commands:
+
+* mvn source:jar
+* mvn javadoc:jar
+* mvn package
 
 
 
