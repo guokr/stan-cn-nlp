@@ -6,7 +6,7 @@ An API wrapper based on Stanford NLP packages for the convenience of Chinese use
 This package is at its early stage (v0.0.1), bugs may exists, we recommend you
 not to use it for production right now.
 
-Comments, review, bug reports and patches are welcomed.
+Comments, reviews, bug reports and patches are welcomed.
 
 How to play
 ------------
