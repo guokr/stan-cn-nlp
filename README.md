@@ -35,7 +35,7 @@ Segmenting text:
 NerWrapper and TagWrapper are very similar.
 
 Preparation for release
---------------------
+------------------------
 
 Before release this package to maven central, please execute below commands:
 
@@ -43,5 +43,8 @@ Before release this package to maven central, please execute below commands:
 * mvn javadoc:jar
 * mvn package
 
+License
+--------
 
+GPLv2, just as Stanford CoreNLP package
 

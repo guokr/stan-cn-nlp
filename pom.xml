@@ -6,16 +6,34 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.guokr</groupId>
   <artifactId>stan-cn-nlp</artifactId>
+  <version>0.0.1</version>
   <packaging>jar</packaging>
-  <version>0.1.0</version>
   <name>stan-cn-nlp</name>
   <description>An API wrapper based on Stanford Core NLP package for Simplified Chinese users</description>
+  <url>https://github.com/guokr/stan-cn-nlp</url>
+  <licenses>
+    <license>
+      <name>GNU General Public License Version 2</name>
+      <url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+    </license>
+  </licenses>
   <scm>
+    <url>https://github.com/guokr/stan-cn-nlp</url>
     <connection>scm:git:git://github.com/guokr/stan-cn-nlp.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/guokr/stan-cn-nlp.git</developerConnection>
-    <tag>7c843705c0194957b03deac5c625aded5685f045</tag>
-    <url>https://github.com/guokr/stan-cn-nlp</url>
   </scm>
+  <developers>
+    <developer>
+      <id>mingli.yuan</id>
+      <name>Mingli Yuan</name>
+      <email>mingli.yuan@gmail.com</email>
+    </developer>
+    <developer>
+      <id>isnowify</id>
+      <name>Rui Wang</name>
+      <email>isnowfy@gmail.com</email>
+    </developer>
+  </developers>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <testSourceDirectory>src/test/java</testSourceDirectory>

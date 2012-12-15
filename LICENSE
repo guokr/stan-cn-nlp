@@ -1,4 +1,9 @@
-stan-cn-nlp: A clojure wrapper based on Stanford NLP packages for Chinese users
+stan-cn-nlp
+============
+
+An API wrapper based on Stanford NLP packages for Simplified Chinese users
+
+* * * * * * *
 
 Copyright (C) 2012  Guokr.com
 
