@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.guokr.nlp</groupId>
+  <groupId>com.guokr</groupId>
   <artifactId>stan-cn-nlp</artifactId>
   <packaging>jar</packaging>
   <version>0.1.0</version>
   <name>stan-cn-nlp</name>
-  <description>A wrapper of Stanford NLP packages for Simplified Chinese users</description>
+  <description>An API wrapper based on Stanford Core NLP package for Simplified Chinese users</description>
   <scm>
     <connection>scm:git:git://github.com/guokr/stan-cn-nlp.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/guokr/stan-cn-nlp.git</developerConnection>
@@ -24,9 +25,6 @@
       </resource>
     </resources>
     <testResources>
-      <testResource>
-        <directory>dev-resources</directory>
-      </testResource>
       <testResource>
         <directory>src/main/resources</directory>
       </testResource>
@@ -104,6 +102,8 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <finalName>stan-cn-nlp-${project.version}-standalone</finalName>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
@@ -135,11 +135,6 @@
       <groupId>edu.stanford.nlp</groupId>
       <artifactId>stanford-corenlp</artifactId>
       <version>1.3.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
-      <version>1.30</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
