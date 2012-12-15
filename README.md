@@ -1,7 +1,7 @@
 stan-cn-nlp
 ===========
 
-a API wrapper based on Stanford NLP packages for the convenience of Chinese users.
+an API wrapper based on Stanford NLP packages for the convenience of Chinese users.
 
 How to play
 ------------
