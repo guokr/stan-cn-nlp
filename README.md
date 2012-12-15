@@ -34,7 +34,7 @@ Segmenting text:
 
 NerWrapper and TagWrapper are very similar.
 
-Prepare for release
+Preparation for release
 --------------------
 
 Before release this package to maven central, please execute below commands:
