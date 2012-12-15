@@ -39,9 +39,7 @@ Preparation for release
 
 Before release this package to maven central, please execute below commands:
 
-* mvn source:jar
-* mvn javadoc:jar
-* mvn package
+* mvn clean source:jar javadoc:jar package
 
 License
 --------
