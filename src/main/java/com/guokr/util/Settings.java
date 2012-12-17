@@ -12,13 +12,6 @@ public class Settings extends Properties {
     public static Settings empty = new Settings(new Properties(), new Properties());
 
     public static Settings load(String uri) {
-        try {
-            Class.forName("com.guokr.util.ClasspathProtocol");
-        } catch (Exception e) {
-            System.out.println(e);
-            e.printStackTrace(System.err);
-        }
-
         Properties props = new Properties();
         try {
             System.err.println("before loading settings:" + uri);
@@ -32,22 +25,17 @@ public class Settings extends Properties {
     }
 
     public Settings(Properties currents, Properties defaults) {
-        try {
-            Class.forName("com.guokr.util.ClasspathProtocol");
-        } catch (Exception e) {
-            System.out.println(e);
-            e.printStackTrace(System.err);
-        }
-
         this.defaults = defaults;
-        Enumeration e = currents.propertyNames();
-        while (e.hasMoreElements()) {
-            String key = e.nextElement().toString();
-            String value = currents.getProperty(key);
+        if (currents != null) {
+            Enumeration e = currents.propertyNames();
+            while (e.hasMoreElements()) {
+                String key = e.nextElement().toString();
+                String value = currents.getProperty(key);
 
-            value = translateClasspath(key, value);
+                value = translateClasspath(key, value);
 
-            this.setProperty(key, value);
+                this.setProperty(key, value);
+            }
         }
     }
 

@@ -8,9 +8,15 @@ import java.net.URLStreamHandlerFactory;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class ClasspathProtocol {
-    static {
-        URL.setURLStreamHandlerFactory(new Factory("classpath", new Handler()));
+public enum ClasspathProtocol {
+    INSTANCE;
+
+    ClasspathProtocol() {
+        try {
+            URL.setURLStreamHandlerFactory(new Factory("classpath", new Handler()));
+        } catch (Exception e) {
+            //NOOP
+        }
     }
 
     static class Handler extends URLStreamHandler {

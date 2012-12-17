@@ -1,26 +1,41 @@
 package com.guokr.nlp;
 
+import java.lang.reflect.Method;
 import java.io.PrintStream;
-
-import com.guokr.nlp.SegWrapper;
-import com.guokr.nlp.NerWrapper;
-import com.guokr.nlp.TagWrapper;
 
 public class GkNlpCli {
 
     public static void main(String[] args) {
-
+        __PKG__ pkg = __PKG__.INSTANCE;
         if(args.length < 2) {
             usage();
         } else {
             String subcmd = args[0];
             String text = args[1];
             if(subcmd.equals("seg")) {
-                System.out.println(SegWrapper.segment(text));
+                try {
+                    Method segMtd = pkg.localSegWrapper.getDeclaredMethod("segment", String.class);
+                    String segText = (String)segMtd.invoke(pkg.seg, text);
+                    System.out.println(segText);
+                } catch (Exception e) {
+                    //NOOP
+                }
             } else if(subcmd.equals("ner")) {
-                System.out.println(NerWrapper.recognize(text));
+                try {
+                    Method nerMtd = pkg.localNerWrapper.getDeclaredMethod("recognize", String.class);
+                    String nerText = (String)nerMtd.invoke(pkg.ner, text);
+                    System.out.println(nerText);
+                } catch (Exception e) {
+                    //NOOP
+                }
             } else if(subcmd.equals("tag")) {
-                System.out.println(TagWrapper.tag(text));
+                try {
+                    Method tagMtd = pkg.localTagWrapper.getDeclaredMethod("tag", String.class);
+                    String tagText = (String)tagMtd.invoke(pkg.tag, text);
+                    System.out.println(tagText);
+                } catch (Exception e) {
+                    //NOOP
+                }
             }
         }
 
