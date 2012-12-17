@@ -30,6 +30,7 @@ package edu.stanford.nlp.ie;
 import edu.stanford.nlp.fsm.DFSA;
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.io.RegExFileFilter;
+import edu.stanford.nlp.io.RuntimeIOException;
 import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -61,14 +62,14 @@ import java.util.zip.GZIPInputStream;
  * in the (deterministic) NumberSequenceClassifier. See implementing classes for
  * more information.
  * <p>
- * A full implementation should implement these 5 abstract methods:
- * List&lt;CoreLabel&gt; classify(List&lt;CoreLabel&gt; document); void
- * train(Collection&lt;List&lt;CoreLabel&gt;&gt; docs);
- * printProbsDocument(List&lt;CoreLabel&gt; document); void
- * serializeClassifier(String serializePath); void
- * loadClassifier(ObjectInputStream in, Properties props) throws IOException,
- * ClassCastException, ClassNotFoundException; but a runtime (or rule-based)
- * implementation can usefully implement just the first.
+ * A full implementation should implement these 5 abstract methods: <br>
+ * {@code List<CoreLabel> classify(List<CoreLabel> document); } <br>
+ * {@code void train(Collection<List<CoreLabel>> docs); } <br>
+ * {@code printProbsDocument(List<CoreLabel> document); } <br>
+ * {@code void serializeClassifier(String serializePath); } <br>
+ * {@code void loadClassifier(ObjectInputStream in, Properties props) throws IOException,
+ * ClassCastException, ClassNotFoundException; } <br>
+ * but a runtime (or rule-based) implementation can usefully implement just the first.
  *
  * @author Jenny Finkel
  * @author Dan Klein
@@ -114,24 +115,23 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
    * Initialize the featureFactory and other variables based on the passed in
    * flags.
    *
-   * @param flags
-   *          A specification of the AbstractSequenceClassifier to construct.
+   * @param flags A specification of the AbstractSequenceClassifier to construct.
    */
   public AbstractSequenceClassifier(SeqClassifierFlags flags) {
     this.flags = flags;
 
-    try {
-      this.featureFactory = new MetaClass(flags.featureFactory).createInstance(flags.featureFactoryArgs);
-//      this.featureFactory = (FeatureFactory<IN>) Class.forName(flags.featureFactory).newInstance();
-      if (flags.tokenFactory == null) {
-        tokenFactory = (CoreTokenFactory<IN>) new CoreLabelTokenFactory();
-      } else {
-        this.tokenFactory = new MetaClass(flags.tokenFactory).createInstance(flags.tokenFactoryArgs);
-//        this.tokenFactory = (CoreTokenFactory<IN>) Class.forName(flags.tokenFactory).newInstance();
-      }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    // try {
+    this.featureFactory = new MetaClass(flags.featureFactory).createInstance(flags.featureFactoryArgs);
+    //   this.featureFactory = (FeatureFactory<IN>) Class.forName(flags.featureFactory).newInstance();
+    if (flags.tokenFactory == null) {
+      tokenFactory = (CoreTokenFactory<IN>) new CoreLabelTokenFactory();
+    } else {
+      this.tokenFactory = new MetaClass(flags.tokenFactory).createInstance(flags.tokenFactoryArgs);
+    //   this.tokenFactory = (CoreTokenFactory<IN>) Class.forName(flags.tokenFactory).newInstance();
     }
+    // } catch (Exception e) {
+    //   throw new RuntimeException(e);
+    // }
     pad = tokenFactory.makeToken();
     windowSize = flags.maxLeft + 1;
     reinit();
@@ -166,14 +166,17 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
 
   /**
    * Makes a DocumentReaderAndWriter based on the flags the CRFClassifier
-   * was constructed with.  Will create the flags.readerAndWriter and
+   * was constructed with.  Will create an instance of the class specified in
+   * the property flags.readerAndWriter and
    * initialize it with the CRFClassifier's flags.
+   *
+   * @return The appropriate ReaderAndWriter for training/testing this classifier
    */
   public DocumentReaderAndWriter<IN> makeReaderAndWriter() {
     DocumentReaderAndWriter<IN> readerAndWriter;
     try {
-      readerAndWriter = ((DocumentReaderAndWriter<IN>)
-                         Class.forName(flags.readerAndWriter).newInstance());
+      readerAndWriter = (DocumentReaderAndWriter<IN>)
+                         Class.forName(flags.readerAndWriter).newInstance();
     } catch (Exception e) {
       throw new RuntimeException(String.format("Error loading flags.readerAndWriter: '%s'", flags.readerAndWriter), e);
     }
@@ -198,7 +201,7 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
     }
     DocumentReaderAndWriter<IN> readerAndWriter;
     try {
-      readerAndWriter = ((DocumentReaderAndWriter<IN>) Class.forName(readerClassName).newInstance());
+      readerAndWriter = (DocumentReaderAndWriter<IN>) Class.forName(readerClassName).newInstance();
     } catch (Exception e) {
       throw new RuntimeException(String.format("Error loading flags.plainTextDocumentReaderAndWriter: '%s'", flags.plainTextDocumentReaderAndWriter), e);
     }
@@ -307,6 +310,7 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
       SequenceModel model = getSequenceModel(input);
       SequenceSampler sampler = new SequenceSampler();
 
+      @Override
       public List<IN> drawSample() {
         int[] sampleArray = sampler.bestSequence(model);
         List<IN> sample = new ArrayList<IN>();
@@ -458,6 +462,7 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
    * String. Implements the Function interface. Calls
    * classifyWithInlineXML(String) [q.v.].
    */
+  @Override
   public String apply(String in) {
     return classifyWithInlineXML(in);
   }
@@ -512,11 +517,10 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
     StringBuilder sb = new StringBuilder();
     for (List<IN> doc : documents) {
       List<IN> docOutput = classify(doc);
-      if (plainTextReaderAndWriter instanceof
-          PlainTextDocumentReaderAndWriter) {
+      if (plainTextReaderAndWriter instanceof PlainTextDocumentReaderAndWriter) {
         // TODO: implement this particular method and its options in
         // the other documentReaderAndWriters
-        sb.append(((PlainTextDocumentReaderAndWriter) plainTextReaderAndWriter).getAnswers(docOutput, outFormat, preserveSpacing));
+        sb.append(((PlainTextDocumentReaderAndWriter<IN>) plainTextReaderAndWriter).getAnswers(docOutput, outFormat, preserveSpacing));
       } else {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
@@ -754,7 +758,7 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
    * Note that the Collection can be (and usually is) an ObjectBank.
    *
    * @param docs
-   *          An Objectbank or a collection of sequences of IN
+   *          An ObjectBank or a collection of sequences of IN
    * @param readerAndWriter
    *          A DocumentReaderAndWriter to use when loading test files
    */
@@ -887,8 +891,7 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
    * Takes the file, reads it in, and prints out the likelihood of each possible
    * label at each point.
    *
-   * @param filename
-   *          The path to the specified file
+   * @param filename The path to the specified file
    */
   public void printProbs(String filename,
                          DocumentReaderAndWriter<IN> readerAndWriter) {
@@ -925,8 +928,7 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
     throws IOException
   {
     BufferedReader is = new BufferedReader(new InputStreamReader(System.in, flags.inputEncoding));
-    String line;
-    while ((line = is.readLine()) != null) {
+    for (String line; (line = is.readLine()) != null; ) {
       ObjectBank<List<IN>> documents = makeObjectBankFromString(line, readerWriter);
       classifyAndWriteAnswers(documents, readerWriter);
     }
@@ -1028,10 +1030,7 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
       classify(doc);
       numWords += doc.size();
       writeAnswers(doc, printWriter, readerWriter);
-      resultsCounted = (resultsCounted &&
-                        (flags.evaluateIOB ?
-                         countResultsIOB(doc, entityTP, entityFP, entityFN) :
-                         countResults(doc, entityTP, entityFP, entityFN)));
+      resultsCounted = resultsCounted && countResults(doc, entityTP, entityFP, entityFN);
       numDocs++;
     }
     long millis = timer.stop();
@@ -1102,8 +1101,7 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
    * Load a test file, run the classifier on it, and then write a Viterbi search
    * graph for each sequence.
    *
-   * @param testFile
-   *          The file to test on.
+   * @param testFile The file to test on.
    */
   public void classifyAndWriteViterbiSearchGraph(String testFile, String searchGraphPrefix, DocumentReaderAndWriter<IN> readerAndWriter) throws IOException {
     Timing timer = new Timing();
@@ -1119,7 +1117,7 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
           + ".wlattice"));
       PrintWriter vsgWriter = new PrintWriter(new FileOutputStream(searchGraphPrefix + '.' + numSentences + ".lattice"));
       if (readerAndWriter instanceof LatticeWriter)
-        ((LatticeWriter) readerAndWriter).printLattice(tagLattice, doc, latticeWriter);
+        ((LatticeWriter<IN>) readerAndWriter).printLattice(tagLattice, doc, latticeWriter);
       tagLattice.printAttFsmFormat(vsgWriter);
       latticeWriter.close();
       vsgWriter.close();
@@ -1154,10 +1152,114 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
     }
   }
 
+  /**
+   * Count results using a method appropriate for the tag scheme being used.
+   */
+  public boolean countResults(List<IN> doc,
+                              Counter<String> entityTP,
+                              Counter<String> entityFP,
+                              Counter<String> entityFN) {
+    String bg = (flags.evaluateBackground ? null : flags.backgroundSymbol);
+    if (flags.entitySubclassification.equalsIgnoreCase("iob2")) {
+      bg = flags.backgroundSymbol;
+      return countResultsIOB2(doc, entityTP, entityFP, entityFN, bg);
+    } else if (flags.iobTags) {
+      bg = flags.backgroundSymbol;
+      return countResultsIOB(doc, entityTP, entityFP, entityFN, bg);
+    } else {
+      return countResults(doc, entityTP, entityFP, entityFN, bg);
+    }
+  }
+
+  public static boolean countResultsIOB2(List<? extends CoreMap> doc,
+                                         Counter<String> entityTP,
+                                         Counter<String> entityFP,
+                                         Counter<String> entityFN,
+                                         String background) {
+    boolean entityCorrect = true;
+    // the annotations
+    String previousGold = background;
+    String previousGuess = background;
+    // the part after the I- or B- in the annotation
+    String previousGoldEntity = "";
+    String previousGuessEntity = "";
+
+    for (CoreMap word : doc) {
+      String gold = word.get(GoldAnswerAnnotation.class);
+      String guess = word.get(AnswerAnnotation.class);
+      String goldEntity = (!gold.equals(background)) ? gold.substring(2) : "";
+      String guessEntity = (!guess.equals(background)) ? guess.substring(2) : "";
+
+      //System.out.println(gold + " (" + goldEntity + ") ; " + guess + " (" + guessEntity + ")");
+
+      boolean newGold = (!gold.equals(background) && 
+                         (!goldEntity.equals(previousGoldEntity)) || gold.startsWith("B-"));
+      boolean newGuess = (!guess.equals(background) && 
+                          (!guessEntity.equals(previousGuessEntity)) || guess.startsWith("B-"));
+      boolean goldEnded = (!previousGold.equals(background) && 
+                           (gold.startsWith("B-") || !goldEntity.equals(previousGoldEntity)));
+      boolean guessEnded = (!previousGuess.equals(background) && 
+                            (guess.startsWith("B-") || !guessEntity.equals(previousGuessEntity)));
+
+      //System.out.println("  " + newGold + " " + newGuess + " " + goldEnded + " " + guessEnded);
+
+      if (goldEnded && !guessEnded) {
+        entityFN.incrementCount(previousGoldEntity, 1.0);
+        entityCorrect = gold.equals(background) && guess.equals(background);
+      }
+      if (goldEnded && guessEnded) {
+        if (entityCorrect) {
+          entityTP.incrementCount(previousGoldEntity, 1.0);
+        } else {
+          entityFN.incrementCount(previousGoldEntity, 1.0);
+          entityFP.incrementCount(previousGuessEntity, 1.0);
+        }
+        entityCorrect = gold.equals(guess);
+      }
+      if (!goldEnded && guessEnded) {
+        entityCorrect = false;
+        entityFP.incrementCount(previousGuessEntity, 1.0);
+      }
+      // nothing to do if neither gold nor guess have ended
+
+      if (newGold && !newGuess) {
+        entityCorrect = false;
+      }
+      if (newGold && newGuess) {
+        entityCorrect = guessEntity.equals(goldEntity);
+      }
+      if (!newGold && newGuess) {
+        entityCorrect = false;
+      }
+
+      previousGold = gold;
+      previousGuess = guess;
+      previousGoldEntity = goldEntity;
+      previousGuessEntity = guessEntity;
+    }
+
+    // At the end, we need to check the last entity
+    if (!previousGold.equals(background)) {
+      if (entityCorrect) {
+        entityTP.incrementCount(previousGoldEntity, 1.0);
+      } else {
+        entityFN.incrementCount(previousGoldEntity, 1.0);
+      }
+    }
+    if (!previousGuess.equals(background)) {
+      if (!entityCorrect) {
+        entityFP.incrementCount(previousGuessEntity, 1.0);
+      }
+    }
+
+    return true;
+  }
+
   public static boolean countResultsIOB(List<? extends CoreMap> doc,
                                         Counter<String> entityTP,
                                         Counter<String> entityFP,
-                                        Counter<String> entityFN) {
+                                        Counter<String> entityFN,
+                                        String background) {
     // first, check that all answers exist and are either O, B-, or I-
     for (CoreMap line : doc) {
       String gold = line.get(GoldAnswerAnnotation.class);
@@ -1171,12 +1273,12 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
         System.err.println("Blank guess");
         return false;
       }
-      if (!gold.equals("O") && !gold.startsWith("B-") &&
+      if (!gold.equals(background) && !gold.startsWith("B-") &&
           !gold.startsWith("I-")) {
         System.err.println("Unexpected gold answer " + gold);
         return false;
       }
-      if (!guess.equals("O") && !guess.startsWith("B-") &&
+      if (!guess.equals(background) && !guess.startsWith("B-") &&
           !guess.startsWith("I-")) {
         System.err.println("Unexpected guess " + guess);
         return false;
@@ -1193,34 +1295,35 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
     // anything that did not correctly match the gold.
     int index = 0;
     while (index < doc.size()) {
-      index = tallyOneEntity(doc, index,
-                             GoldAnswerAnnotation.class,
-                             AnswerAnnotation.class,
-                             entityTP, entityFN);
+      index = tallyOneEntityIOB(doc, index,
+                                GoldAnswerAnnotation.class,
+                                AnswerAnnotation.class,
+                                entityTP, entityFN, background);
     }
     index = 0;
     while (index < doc.size()) {
-      index = tallyOneEntity(doc, index,
-                             AnswerAnnotation.class,
-                             GoldAnswerAnnotation.class,
-                             null, entityFP);
+      index = tallyOneEntityIOB(doc, index,
+                                AnswerAnnotation.class,
+                                GoldAnswerAnnotation.class,
+                                null, entityFP, background);
     }
 
     return true;
   }
 
-  public static int tallyOneEntity(List<? extends CoreMap> doc,
-                                   int index,
-                                   Class<? extends CoreAnnotation<String>> source,
-                                   Class<? extends CoreAnnotation<String>> target,
-                                   Counter<String> positive,
-                                   Counter<String> negative) {
+  public static int tallyOneEntityIOB(List<? extends CoreMap> doc,
+                                      int index,
+                                      Class<? extends CoreAnnotation<String>> source,
+                                      Class<? extends CoreAnnotation<String>> target,
+                                      Counter<String> positive,
+                                      Counter<String> negative,
+                                      String background) {
     CoreMap line = doc.get(index);
     String gold = line.get(source);
     String guess = line.get(target);
 
     // uninteresting
-    if (gold.equals("O")) {
+    if (gold.equals(background)) {
       return index + 1;
     }
     String entity = gold.substring(2);
@@ -1228,8 +1331,8 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
     ++index;
     while (index < doc.size()) {
       line = doc.get(index);
-      gold = line.get(GoldAnswerAnnotation.class);
-      guess = line.get(AnswerAnnotation.class);
+      gold = line.get(source);
+      guess = line.get(target);
 
       if (!gold.equals("I-" + entity)) {
         if (guess.equals("I-" + entity)) {
@@ -1262,10 +1365,11 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
   public static boolean countResults(List<? extends CoreMap> doc,
                                      Counter<String> entityTP,
                                      Counter<String> entityFP,
-                                     Counter<String> entityFN) {
+                                     Counter<String> entityFN,
+                                     String background) {
     int index = 0;
     int goldIndex = 0, guessIndex = 0;
-    String lastGold = "O", lastGuess = "O";
+    String lastGold = background, lastGuess = background;
 
     // As we go through the document, there are two events we might be
     // interested in.  One is when a gold entity ends, and the other
@@ -1280,18 +1384,16 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
       if (gold == null || guess == null)
         return false;
 
-      if (!lastGold.equals(gold) && !lastGold.equals("O")) {
-        if (lastGuess.equals(lastGold) && !lastGuess.equals(guess) &&
-            goldIndex == guessIndex) {
+      if (lastGold != null && !lastGold.equals(gold) && !lastGold.equals(background)) {
+        if (lastGuess.equals(lastGold) && !lastGuess.equals(guess) && goldIndex == guessIndex) {
           entityTP.incrementCount(lastGold, 1.0);
         } else {
           entityFN.incrementCount(lastGold, 1.0);
         }
       }
 
-      if (!lastGuess.equals(guess) && !lastGuess.equals("O")) {
-        if (lastGuess.equals(lastGold) && !lastGuess.equals(guess) &&
-            goldIndex == guessIndex && !lastGold.equals(gold)) {
+      if (lastGuess != null && !lastGuess.equals(guess) && !lastGuess.equals(background)) {
+        if (lastGuess.equals(lastGold) && !lastGuess.equals(guess) && goldIndex == guessIndex && !lastGold.equals(gold)) {
           // correct guesses already tallied
           // only need to tally false positives
         } else {
@@ -1299,12 +1401,12 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
         }
       }
 
-      if (!lastGold.equals(gold)) {
+      if (lastGold == null || !lastGold.equals(gold)) {
         lastGold = gold;
         goldIndex = index;
       }
 
-      if (!lastGuess.equals(guess)) {
+      if (lastGuess == null || !lastGuess.equals(guess)) {
         lastGuess = guess;
         guessIndex = index;
       }
@@ -1314,14 +1416,14 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
     // We also have to account for entities at the very end of the
     // document, since the above logic only occurs when we see
     // something that tells us an entity has ended
-    if (!lastGold.equals("O")) {
+    if (lastGold != null && !lastGold.equals(background)) {
       if (lastGold.equals(lastGuess) && goldIndex == guessIndex) {
         entityTP.incrementCount(lastGold, 1.0);
       } else {
         entityFN.incrementCount(lastGold, 1.0);
       }
     }
-    if (!lastGuess.equals("O")) {
+    if (lastGuess != null && !lastGuess.equals(background)) {
       if (lastGold.equals(lastGuess) && goldIndex == guessIndex) {
         // correct guesses already tallied
       } else {
@@ -1380,42 +1482,36 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
   /**
    * Serialize a sequence classifier to a file on the given path.
    *
-   * @param serializePath
-   *          The path/filename to write the classifier to.
+   * @param serializePath The path/filename to write the classifier to.
    */
   public abstract void serializeClassifier(String serializePath);
 
   /**
-   * Loads a classifier from the given input stream. The JVM shuts down
-   * (System.exit(1)) if there is an exception. This does not close the
-   * InputStream.
+   * Loads a classifier from the given input stream.
+   * Any exceptions are rethrown as unchecked exceptions.
+   * This method does not close the InputStream.
    *
-   * @param in
-   *          The InputStream to read from
+   * @param in The InputStream to read from
    */
   public void loadClassifierNoExceptions(InputStream in, Properties props) {
     // load the classifier
     try {
       loadClassifier(in, props);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
+    } catch (ClassNotFoundException cnfe) {
+      throw new RuntimeException(cnfe);
     }
-
   }
 
   /**
    * Load a classifier from the specified InputStream. No extra properties are
    * supplied. This does not close the InputStream.
    *
-   * @param in
-   *          The InputStream to load the serialized classifier from
-   *
-   * @throws IOException
-   *           If there are problems accessing the input stream
-   * @throws ClassCastException
-   *           If there are problems interpreting the serialized data
-   * @throws ClassNotFoundException
-   *           If there are problems interpreting the serialized data
+   * @param in The InputStream to load the serialized classifier from
+   * @throws IOException If there are problems accessing the input stream
+   * @throws ClassCastException If there are problems interpreting the serialized data
+   * @throws ClassNotFoundException If there are problems interpreting the serialized data
    */
   public void loadClassifier(InputStream in) throws IOException, ClassCastException, ClassNotFoundException {
     loadClassifier(in, null);
@@ -1431,7 +1527,6 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
    * @param props
    *          This Properties object will be used to update the
    *          SeqClassifierFlags which are read from the serialized classifier
-   *
    * @throws IOException
    *           If there are problems accessing the input stream
    * @throws ClassCastException
@@ -1453,7 +1548,6 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
    * @param props
    *          This Properties object will be used to update the
    *          SeqClassifierFlags which are read from the serialized classifier
-   *
    * @throws IOException
    *           If there are problems accessing the input stream
    * @throws ClassCastException
@@ -1613,19 +1707,12 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
 
   /** Print the String features generated from a IN */
   protected void printFeatures(IN wi, Collection<String> features) {
-    if (flags.printFeatures == null || writtenNum > flags.printFeaturesUpto) {
+    if (flags.printFeatures == null || writtenNum >= flags.printFeaturesUpto) {
       return;
     }
-    try {
-      if (cliqueWriter == null) {
-        cliqueWriter = new PrintWriter(new FileOutputStream("feats" + flags.printFeatures + ".txt"), true);
-        writtenNum = 0;
-      }
-    } catch (Exception ioe) {
-      throw new RuntimeException(ioe);
-    }
-    if (writtenNum >= flags.printFeaturesUpto) {
-      return;
+    if (cliqueWriter == null) {
+      cliqueWriter = IOUtils.getPrintWriterOrDie("feats-" + flags.printFeatures + ".txt");
+      writtenNum = 0;
     }
     if (wi instanceof CoreLabel) {
       cliqueWriter.print(wi.get(TextAnnotation.class) + ' ' + wi.get(PartOfSpeechAnnotation.class) + ' '
@@ -1635,7 +1722,9 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
           + wi.get(CoreAnnotations.GoldAnswerAnnotation.class) + '\t');
     }
     boolean first = true;
-    for (Object feat : features) {
+    List<String> featsList = new ArrayList<String>(features);
+    Collections.sort(featsList);
+    for (String feat : featsList) {
       if (first) {
         first = false;
       } else {
@@ -1649,19 +1738,12 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
 
   /** Print the String features generated from a token */
   protected void printFeatureLists(IN wi, Collection<List<String>> features) {
-    if (flags.printFeatures == null || writtenNum > flags.printFeaturesUpto) {
+    if (flags.printFeatures == null || writtenNum >= flags.printFeaturesUpto) {
       return;
     }
-    try {
-      if (cliqueWriter == null) {
-        cliqueWriter = new PrintWriter(new FileOutputStream("feats" + flags.printFeatures + ".txt"), true);
-        writtenNum = 0;
-      }
-    } catch (Exception ioe) {
-      throw new RuntimeException(ioe);
-    }
-    if (writtenNum >= flags.printFeaturesUpto) {
-      return;
+    if (cliqueWriter == null) {
+      cliqueWriter = IOUtils.getPrintWriterOrDie("feats-" + flags.printFeatures + ".txt");
+      writtenNum = 0;
     }
     if (wi instanceof CoreLabel) {
       cliqueWriter.print(wi.get(TextAnnotation.class) + ' ' + wi.get(PartOfSpeechAnnotation.class) + ' '
@@ -1672,7 +1754,9 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
     }
     boolean first = true;
     for (List<String> featList : features) {
-      for (String feat : featList) {
+      List<String> sortedFeatList = new ArrayList<String>(featList);
+      Collections.sort(sortedFeatList);
+      for (String feat : sortedFeatList) {
         if (first) {
           first = false;
         } else {
@@ -1684,6 +1768,10 @@ public abstract class AbstractSequenceClassifier<IN extends CoreMap> implements 
     }
     cliqueWriter.println();
     writtenNum++;
+  }
+
+  public int windowSize() {
+    return windowSize;
   }
 
 }

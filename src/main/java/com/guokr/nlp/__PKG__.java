@@ -22,6 +22,7 @@ public enum __PKG__ {
 
     private ClasspathProtocol protocol = ClasspathProtocol.INSTANCE;
     private Class localSettings = loader.safeLoadClass("com.guokr.util.Settings");
+    private Class localIOUtils = loader.safeLoadClass("edu.stanford.nlp.io.IOUtils");
 
     public Class localSegWrapper = loader.safeLoadClass("com.guokr.nlp.SegWrapper");
     public Class localNerWrapper = loader.safeLoadClass("com.guokr.nlp.NerWrapper");

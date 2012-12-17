@@ -364,26 +364,16 @@ public class IOUtils {
    * @return The InputStream of name, or null if not found
    */
   private static InputStream findStreamInClasspathOrFileSystem(String name) throws FileNotFoundException {
-    String path = null;
-    if (name.startsWith("/")) {
-        path = name.substring(1);
-    }
-
     // ms 10-04-2010:
     // - even though this may look like a regular file, it may be a path inside a jar in the CLASSPATH
     // - check for this first. This takes precedence over the file system.
-    InputStream is = null;
-    if (path != null) {
-        is = IOUtils.class.getClassLoader().getResourceAsStream(path);
-        // windows File.separator is \, but getting resources only works with /
-        if (is == null) {
-           is = IOUtils.class.getClassLoader().getResourceAsStream(path.replaceAll("\\\\", "/"));
-        }
+    InputStream is = IOUtils.class.getClassLoader().getResourceAsStream(name);
+    // windows File.separator is \, but getting resources only works with /
+    if (is == null) {
+      is = IOUtils.class.getClassLoader().getResourceAsStream(name.replaceAll("\\\\", "/"));
     }
-
     // if not found in the CLASSPATH, load from the file system
     if (is == null) is = new FileInputStream(name);
-
     return is;
   }
 
