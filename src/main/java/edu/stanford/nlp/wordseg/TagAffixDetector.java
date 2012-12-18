@@ -34,6 +34,15 @@ class TagAffixDetector {
       ccPath = corporaDict+"/dict/pos_close/char.ctb.list";
       adPath = corporaDict+"/dict/in.ctb";
     }
+
+    if (ccPath.startsWith("/dict/")) {
+        ccPath = ccPath.substring(1);
+    }
+
+    if (adPath.startsWith("/dict/")) {
+        adPath = adPath.substring(1);
+    }
+
     System.err.println("INFO: TagAffixDetector: useChPos=" + flags.useChPos +
             " | useCTBChar2=" + flags.useCTBChar2 + " | usePKChar2=" + flags.usePKChar2);
     System.err.println("INFO: TagAffixDetector: building TagAffixDetector from "+ccPath+" and "+adPath);

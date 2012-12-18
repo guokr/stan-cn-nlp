@@ -18,7 +18,8 @@ public class GkNlpCli {
                     String segText = (String)segMtd.invoke(pkg.seg, text);
                     System.out.println(segText);
                 } catch (Exception e) {
-                    //NOOP
+                    System.out.println(e);
+                    e.printStackTrace(System.err);
                 }
             } else if(subcmd.equals("ner")) {
                 try {
@@ -26,7 +27,8 @@ public class GkNlpCli {
                     String nerText = (String)nerMtd.invoke(pkg.ner, text);
                     System.out.println(nerText);
                 } catch (Exception e) {
-                    //NOOP
+                    System.out.println(e);
+                    e.printStackTrace(System.err);
                 }
             } else if(subcmd.equals("tag")) {
                 try {
@@ -34,7 +36,8 @@ public class GkNlpCli {
                     String tagText = (String)tagMtd.invoke(pkg.tag, text);
                     System.out.println(tagText);
                 } catch (Exception e) {
-                    //NOOP
+                    System.out.println(e);
+                    e.printStackTrace(System.err);
                 }
             }
         }
