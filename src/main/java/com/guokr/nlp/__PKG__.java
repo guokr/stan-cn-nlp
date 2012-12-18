@@ -7,7 +7,7 @@ import java.net.URL;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 
-import com.guokr.util.ClasspathProtocol;
+//import com.guokr.util.ClasspathProtocol;
 
 public enum __PKG__ {
 
@@ -20,7 +20,8 @@ public enum __PKG__ {
     private JarClassLoader loader = new JarClassLoader(new String[] { path });
     private JclObjectFactory factory = JclObjectFactory.getInstance();
 
-    private ClasspathProtocol protocol = ClasspathProtocol.INSTANCE;
+    //private ClasspathProtocol protocol = ClasspathProtocol.INSTANCE;
+    private Object protocol = loader.safeLoadClass("com.guokr.util.ClasspathProtocol").getEnumConstants()[0];
     private Class localSettings = loader.safeLoadClass("com.guokr.util.Settings");
     private Class localIOUtils = loader.safeLoadClass("edu.stanford.nlp.io.IOUtils");
 
