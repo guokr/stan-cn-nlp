@@ -24,22 +24,7 @@ public class NerWrapper {
     }
 
     public String recognize(String text) {
-        String segText = text;
-        try {
-            ClassLoader loader = getClass().getClassLoader().getParent();
-            Object pkg = loader.loadClass("com.guokr.nlp.__PKG__").getEnumConstants()[0];
-            Class pkgClazz = pkg.getClass();
-
-            Object segObjct = pkgClazz.getDeclaredField("seg").get(pkg);
-            Class segClazz  = (Class)pkgClazz.getDeclaredField("localSegWrapper").get(pkg);
-            Method segMtd = segClazz.getDeclaredMethod("segment", String.class);
-
-            segText = (String)segMtd.invoke(segObjct, text);
-        } catch (Exception e) {
-            System.out.println(e);
-            e.printStackTrace(System.err);
-        }
-        return classifier.classifyToString(segText).trim();
+        return classifier.classifyToString(__PKG__.INSTANCE.segment(text).trim()).trim();
     }
 
 }

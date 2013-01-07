@@ -14,8 +14,7 @@ public class GkNlpCli {
             String text = args[1];
             if(subcmd.equals("seg")) {
                 try {
-                    Method segMtd = pkg.localSegWrapper.getDeclaredMethod("segment", String.class);
-                    String segText = (String)segMtd.invoke(pkg.seg, text);
+                    String segText = pkg.segment(text);
                     System.out.println(segText);
                 } catch (Exception e) {
                     System.out.println(e);
@@ -23,8 +22,7 @@ public class GkNlpCli {
                 }
             } else if(subcmd.equals("ner")) {
                 try {
-                    Method nerMtd = pkg.localNerWrapper.getDeclaredMethod("recognize", String.class);
-                    String nerText = (String)nerMtd.invoke(pkg.ner, text);
+                    String nerText = pkg.recognize(text);
                     System.out.println(nerText);
                 } catch (Exception e) {
                     System.out.println(e);
@@ -32,8 +30,7 @@ public class GkNlpCli {
                 }
             } else if(subcmd.equals("tag")) {
                 try {
-                    Method tagMtd = pkg.localTagWrapper.getDeclaredMethod("tag", String.class);
-                    String tagText = (String)tagMtd.invoke(pkg.tag, text);
+                    String tagText = pkg.tag(text);
                     System.out.println(tagText);
                 } catch (Exception e) {
                     System.out.println(e);
