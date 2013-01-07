@@ -22,7 +22,6 @@ public class SegWrapper {
     }
 
     public String segment(String text) {
-        System.err.println("---------------------------");
         return classifier.classifyToString(text).trim();
     }
 

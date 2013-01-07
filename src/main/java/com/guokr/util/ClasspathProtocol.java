@@ -5,8 +5,16 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
+import java.security.ProtectionDomain;
+import java.security.CodeSource;
 import java.util.Hashtable;
 import java.util.Map;
+
+import org.xeustechnologies.jcl.AbstractClassLoader;
+import org.xeustechnologies.jcl.JarClassLoader;
+import org.xeustechnologies.jcl.JclObjectFactory;
+
+import com.guokr.util.DowngradeClassLoader;
 
 public enum ClasspathProtocol {
     INSTANCE;
@@ -21,9 +29,16 @@ public enum ClasspathProtocol {
 
     static class Handler extends URLStreamHandler {
         private final ClassLoader loader;
+        private ProtectionDomain domain = ClasspathProtocol.class.getProtectionDomain();
+        private CodeSource source = domain.getCodeSource();
+        private URL location = source.getLocation();
+        private String path = (location != null ? location.getPath() : null);
 
         public Handler() {
-            this.loader = getClass().getClassLoader();
+            AbstractClassLoader loader = (path != null
+                ? new JarClassLoader(new String[] { path })
+                : new DowngradeClassLoader(getClass().getClassLoader()));
+            this.loader = loader;
         }
 
         public Handler(ClassLoader loader) {
