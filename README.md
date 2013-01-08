@@ -16,9 +16,9 @@ Please follow below steps to play with:
 * git clone git://github.com/guokr/stan-cn-nlp.git
 * cd stan-cn-nlp
 * mvn package
-* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.0.1-standalone.jar seg "大江东去浪淘尽"
-* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.0.1-standalone.jar ner "大江东去浪淘尽"
-* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.0.1-standalone.jar tag "大江东去浪淘尽"
+* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.0.3-SNAPSHOT-standalone.jar seg "大江东去浪淘尽"
+* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.0.3-SNAPSHOT-standalone.jar ner "大江东去浪淘尽"
+* java -Xms1g -Xmx2g -jar target/stan-cn-nlp-0.0.3-SNAPSHOT-standalone.jar tag "大江东去浪淘尽"
 
 The API
 --------
