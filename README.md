@@ -25,19 +25,19 @@ The API
 
 We use a very simple API to reduce the complexity.
 
-Refer to default configuration(optional):
+```java
+    new SegWrapper(settings).segment(text);
+    new NerWrapper(settings).recognize(text);
+    new TagWrapper(settings).tag(text);
+```
 
-    SegWrapper.defaults;
+Or if you want to use the default language models, just use
 
-Loading configuration(optional):
-
-    SegWrapper.reload(props, defaults);
-
-Segmenting text:
-
-    SegWrapper.segment(text);
-
-NerWrapper and TagWrapper are very similar.
+```java
+    __PKG__.INSTANCE.segment(text);
+    __PKG__.INSTANCE.recognize(text);
+    __PKG__.INSTANCE.tag(text);
+```
 
 Preparation for release
 ------------------------
