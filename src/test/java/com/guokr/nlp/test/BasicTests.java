@@ -9,9 +9,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import com.guokr.nlp.__PKG__;
-import com.guokr.nlp.SegWrapper;
-import com.guokr.nlp.NerWrapper;
-import com.guokr.nlp.TagWrapper;
 
 @RunWith(JUnit4.class)
 public class BasicTests {

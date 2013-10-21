@@ -44,6 +44,26 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>com.guokr</groupId>
+      <artifactId>stan-cn-com</artifactId>
+      <version>0.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.guokr</groupId>
+      <artifactId>stan-cn-seg</artifactId>
+      <version>0.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.guokr</groupId>
+      <artifactId>stan-cn-ner</artifactId>
+      <version>0.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.guokr</groupId>
+      <artifactId>stan-cn-tag</artifactId>
+      <version>0.0.3</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.7</version>

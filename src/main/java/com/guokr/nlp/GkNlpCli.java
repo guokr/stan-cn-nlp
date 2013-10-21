@@ -43,7 +43,7 @@ public class GkNlpCli {
 
     private static void usage() {
         PrintStream out = System.out;
-        out.println("ant [command] [text]");
+        out.println("gknlp [command] [text]");
         out.println("\tcommands:");
         out.println("\t\tseg: segment the text into words");
         out.println("\t\tner: recognize the named entity in the text");
