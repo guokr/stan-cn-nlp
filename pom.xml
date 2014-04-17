@@ -46,22 +46,22 @@
     <dependency>
       <groupId>com.guokr</groupId>
       <artifactId>stan-cn-com</artifactId>
-      <version>0.0.3</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.guokr</groupId>
       <artifactId>stan-cn-seg</artifactId>
-      <version>0.0.3</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.guokr</groupId>
       <artifactId>stan-cn-ner</artifactId>
-      <version>0.0.3</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.guokr</groupId>
       <artifactId>stan-cn-tag</artifactId>
-      <version>0.0.3</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
