@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.guokr</groupId>
   <artifactId>stan-cn-nlp</artifactId>
-  <version>0.0.4</version>
+  <version>0.0.5-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>stan-cn-nlp</name>
   <description>An API wrapper based on Stanford Core NLP package for Simplified Chinese users</description>
@@ -46,22 +46,22 @@
     <dependency>
       <groupId>com.guokr</groupId>
       <artifactId>stan-cn-com</artifactId>
-      <version>0.0.4</version>
+      <version>0.0.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.guokr</groupId>
       <artifactId>stan-cn-seg</artifactId>
-      <version>0.0.4</version>
+      <version>0.0.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.guokr</groupId>
       <artifactId>stan-cn-ner</artifactId>
-      <version>0.0.4</version>
+      <version>0.0.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.guokr</groupId>
       <artifactId>stan-cn-tag</artifactId>
-      <version>0.0.4</version>
+      <version>0.0.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
